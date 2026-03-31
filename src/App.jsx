@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Timer, User, Trophy, Palette, Rocket, History, Music, 
   BookOpen, MapPin, Cross, Zap, ChevronRight, RefreshCw, 
-  Star, ShieldCheck, Flame, Film, Tv, Award, PawPrint, Ghost
+  Star, ShieldCheck, Flame, Film, Tv, Award, PawPrint, Ghost,
+  Plus, Minus
 } from 'lucide-react';
 import { initializeApp } from 'firebase/app';
 import { 
@@ -109,6 +110,22 @@ export default function App() {
   }, [user]);
 
   // Game Handlers
+  const addPlayer = () => {
+    if (players.length >= 6) return;
+    setPlayers([...players, { name: `Joueur ${players.length + 1}`, score: 0, jokers: { skip: true, double: true } }]);
+  };
+
+  const removePlayer = () => {
+    if (players.length <= 2) return;
+    setPlayers(players.slice(0, -1));
+  };
+
+  const updatePlayerName = (idx, newName) => {
+    const updated = [...players];
+    updated[idx].name = newName;
+    setPlayers(updated);
+  };
+
   const startNewGame = () => {
     const gameQuestions = [...QUESTIONS_DB].sort(() => Math.random() - 0.5).slice(0, 15);
     setQuestions(gameQuestions);
@@ -216,8 +233,38 @@ export default function App() {
         <div className="max-w-4xl w-full z-10 animate-in fade-in zoom-in duration-700 text-center flex flex-col items-center">
           <div className="inline-block bg-slate-900/60 backdrop-blur-xl p-6 md:p-10 rounded-[3rem] md:rounded-[4rem] border border-slate-800 shadow-2xl mb-8 md:mb-12 mx-auto w-full max-w-[90%] md:max-w-none">
             <Trophy className="w-16 h-16 md:w-24 md:h-24 text-yellow-500 mx-auto drop-shadow-[0_0_20px_rgba(234,179,8,0.5)] mb-4 md:mb-6" />
-            <h1 className="text-5xl sm:text-6xl md:text-8xl font-black italic tracking-tighter text-white mb-2 break-words">QUIZ HELLAS</h1>
-            <p className="text-blue-400 font-bold uppercase tracking-[0.4em] md:tracking-[0.6em] text-[10px] md:text-xs break-words">Eirini • Danai • Dany</p>
+            <h1 className="text-5xl sm:text-6xl md:text-8xl font-black italic tracking-tighter text-white mb-6 break-words">QUIZ HELLAS</h1>
+            
+            <div className="flex flex-col items-center gap-4 bg-slate-950/40 p-4 md:p-6 rounded-3xl border border-slate-800/50">
+              <span className="text-blue-400 font-bold uppercase tracking-widest text-xs mb-2">Configurez les joueurs</span>
+              <div className="flex gap-3 justify-center flex-wrap w-full">
+                {players.map((p, i) => (
+                  <input 
+                    key={i} 
+                    value={p.name}
+                    onChange={(e) => updatePlayerName(i, e.target.value)}
+                    className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm md:text-base text-center font-bold text-white w-full sm:w-[140px] outline-none focus:border-blue-500 focus:bg-white/20 transition-all placeholder-white/30"
+                    placeholder={`Joueur ${i + 1}`}
+                  />
+                ))}
+              </div>
+              <div className="flex gap-4 mt-2">
+                <button 
+                  onClick={removePlayer} 
+                  disabled={players.length <= 2} 
+                  className="p-3 bg-slate-800 border border-slate-700 text-white rounded-2xl hover:bg-slate-700 disabled:opacity-30 transition-all cursor-pointer"
+                >
+                  <Minus size={20} />
+                </button>
+                <button 
+                  onClick={addPlayer} 
+                  disabled={players.length >= 6} 
+                  className="p-3 bg-slate-800 border border-slate-700 text-white rounded-2xl hover:bg-slate-700 disabled:opacity-30 transition-all cursor-pointer"
+                >
+                  <Plus size={20} />
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 max-w-[90%] md:max-w-none mx-auto w-full">
