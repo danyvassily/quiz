@@ -29,52 +29,7 @@ try {
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'quiz-greece-hollywood-v2';
 
 // --- BASE DE DONNÉES ÉTENDUE ---
-const QUESTIONS_DB = [
-  // SÉRIES AMÉRICAINES
-  { cat: "Series", qFr: "Dans la série 'Friends', combien y a-t-il d'amis principaux ?", qEn: "In the show 'Friends', how many main friends are there?", options: [{fr: "5", en: "5"}, {fr: "6", en: "6"}, {fr: "7", en: "7"}], correct: 1 },
-  { cat: "Series", qFr: "Quelle série suit un professeur de chimie produisant de la méthamphétamine ?", qEn: "Which series follows a chemistry teacher producing methamphetamine?", options: [{fr: "The Wire", en: "The Wire"}, {fr: "Breaking Bad", en: "Breaking Bad"}, {fr: "Dexter", en: "Dexter"}], correct: 1 },
-  { cat: "Series", qFr: "De quelle série vient la réplique 'Winter is Coming' ?", qEn: "Which series features the line 'Winter is Coming'?", options: [{fr: "The Witcher", en: "The Witcher"}, {fr: "Vikings", en: "Vikings"}, {fr: "Game of Thrones", en: "Game of Thrones"}], correct: 2 },
-  { cat: "Series", qFr: "Dans 'Stranger Things', comment s'appelle le monde parallèle ?", qEn: "In 'Stranger Things', what is the name of the parallel world?", options: [{fr: "Le Monde à l'Envers", en: "The Upside Down"}, {fr: "Le Néant", en: "The Void"}, {fr: "L'Abîme", en: "The Abyss"}], correct: 0 },
-  
-  // FILMS AMÉRICAINS
-  { cat: "Cinema", qFr: "Quel film détient le record du plus grand nombre d'Oscars (11) avec Ben-Hur et le Seigneur des Anneaux ?", qEn: "Which movie holds the record for most Oscars (11) along with Ben-Hur and Lord of the Rings?", options: [{fr: "Titanic", en: "Titanic"}, {fr: "Avatar", en: "Avatar"}, {fr: "Forrest Gump", en: "Forrest Gump"}], correct: 0 },
-  { cat: "Cinema", qFr: "Qui a réalisé le film 'Pulp Fiction' ?", qEn: "Who directed the movie 'Pulp Fiction'?", options: [{fr: "Steven Spielberg", en: "Steven Spielberg"}, {fr: "Quentin Tarantino", en: "Quentin Tarantino"}, {fr: "Martin Scorsese", en: "Martin Scorsese"}], correct: 1 },
-  { cat: "Cinema", qFr: "Dans 'Star Wars', qui est le père de Luke Skywalker ?", qEn: "In 'Star Wars', who is Luke Skywalker's father?", options: [{fr: "Obi-Wan Kenobi", en: "Obi-Wan Kenobi"}, {fr: "Dark Vador", en: "Darth Vader"}, {fr: "Yoda", en: "Yoda"}], correct: 1 },
-  { cat: "Cinema", qFr: "Quel film d'animation met en scène un ogre vert ?", qEn: "Which animated movie features a green ogre?", options: [{fr: "Toy Story", en: "Toy Story"}, {fr: "Shrek", en: "Shrek"}, {fr: "Le Roi Lion", en: "The Lion King"}], correct: 1 },
-
-  // MYTHOLOGIE & ÉGYPTE
-  { cat: "Mythology", qFr: "Qui est le dieu grec de la guerre ?", qEn: "Who is the Greek god of war?", options: [{fr: "Arès", en: "Ares"}, {fr: "Apollon", en: "Apollo"}, {fr: "Hermès", en: "Hermes"}], correct: 0 },
-  { cat: "Mythology", qFr: "Quel héros a accompli 12 travaux ?", qEn: "Which hero accomplished 12 labors?", options: [{fr: "Persée", en: "Perseus"}, {fr: "Héraclès (Hercule)", en: "Heracles (Hercules)"}, {fr: "Thésée", en: "Theseus"}], correct: 1 },
-  { cat: "Mythology", qFr: "Quel dieu égyptien a une tête de faucon ?", qEn: "Which Egyptian god has the head of a falcon?", options: [{fr: "Anubis", en: "Anubis"}, {fr: "Horus", en: "Horus"}, {fr: "Sobek", en: "Sobek"}], correct: 1 },
-
-  // RELIGION
-  { cat: "Religion", qFr: "Quel est le nom de la montagne où Moïse a reçu les commandements ?", qEn: "What is the name of the mountain where Moses received the commandments?", options: [{fr: "Mont Olympe", en: "Mount Olympus"}, {fr: "Mont Sinaï", en: "Mount Sinai"}, {fr: "Mont Ararat", en: "Mount Ararat"}], correct: 1 },
-
-  // CAPITALES
-  { cat: "Geography", qFr: "Quelle est la capitale de l'Italie ?", qEn: "What is the capital of Italy?", options: [{fr: "Milan", en: "Milan"}, {fr: "Venise", en: "Venice"}, {fr: "Rome", en: "Rome"}], correct: 2 },
-  { cat: "Geography", qFr: "Quelle ville est la capitale de la Corée du Sud ?", qEn: "Which city is the capital of South Korea?", options: [{fr: "Tokyo", en: "Tokyo"}, {fr: "Séoul", en: "Seoul"}, {fr: "Pékin", en: "Beijing"}], correct: 1 },
-
-  // MUSIQUE
-  { cat: "Music", qFr: "Quel duo français d'électro cachait son visage sous des casques de robots ?", qEn: "Which French electro duo hid their faces under robot helmets?", options: [{fr: "Justice", en: "Justice"}, {fr: "Cassius", en: "Cassius"}, {fr: "Daft Punk", en: "Daft Punk"}], correct: 2 },
-  { cat: "Music", qFr: "De quel instrument jouait le célèbre musicien Jimi Hendrix ?", qEn: "What instrument did the famous musician Jimi Hendrix play?", options: [{fr: "Guitare", en: "Guitar"}, {fr: "Piano", en: "Piano"}, {fr: "Batterie", en: "Drums"}], correct: 0 },
-
-  // JEUX VIDÉO
-  { cat: "Gaming", qFr: "Quel célèbre jeu nous fait empiler des blocs qui tombent du ciel ?", qEn: "Which famous game makes us stack blocks falling from the sky?", options: [{fr: "Minecraft", en: "Minecraft"}, {fr: "Tetris", en: "Tetris"}, {fr: "Pac-Man", en: "Pac-Man"}], correct: 1 },
-  { cat: "Gaming", qFr: "Dans quel jeu doit-on attraper des créatures avec des Poké Balls ?", qEn: "In which game do we catch creatures with Poké Balls?", options: [{fr: "Digimon", en: "Digimon"}, {fr: "Zelda", en: "Zelda"}, {fr: "Pokémon", en: "Pokémon"}], correct: 2 },
-
-  // ANECDOTES INSOLITES (TRIVIA)
-  { cat: "Trivia", qFr: "Comment l'ananas pousse-t-il ?", qEn: "How does a pineapple grow?", options: [{fr: "Sur un arbre", en: "On a tree"}, {fr: "Au ras du sol", en: "Close to the ground"}, {fr: "Sous terre", en: "Underground"}], correct: 1 },
-  { cat: "Trivia", qFr: "Quel mammifère est le seul capable de voler ?", qEn: "Which mammal is the only one capable of flying?", options: [{fr: "L'écureuil volant", en: "Flying squirrel"}, {fr: "La chauve-souris", en: "Bat"}, {fr: "Le lémurien", en: "Lemur"}], correct: 1 },
-  { cat: "Trivia", qFr: "Combien de temps dure la mémoire d'un poisson rouge ? (Mythe ou réalité)", qEn: "How long does a goldfish's memory last?", options: [{fr: "3 secondes", en: "3 seconds"}, {fr: "Plusieurs mois", en: "Several months"}, {fr: "Une journée", en: "A day"}], correct: 1 },
-  { cat: "Trivia", qFr: "Quel aliment naturel ne périme littéralement jamais, même après 3000 ans ?", qEn: "Which natural food literally never expires, even after 3000 years?", options: [{fr: "Le sel", en: "Salt"}, {fr: "Le miel", en: "Honey"}, {fr: "L'huile d'olive", en: "Olive oil"}], correct: 1 },
-  { cat: "Trivia", qFr: "Aux États-Unis, que trouve-t-on dans la composition de la dynamite ?", qEn: "In the United States, what do we find in the composition of dynamite?", options: [{fr: "De la farine de maïs", en: "Corn starch"}, {fr: "Du beurre de cacahuète", en: "Peanut butter"}, {fr: "Du sucre glace", en: "Icing sugar"}], correct: 1 },
-
-  // ANIMAUX ÉTRANGES ET DRÔLES
-  { cat: "Animals", qFr: "Quelle est la particularité très étonnante des crottes du wombat (un marsupial) ?", qEn: "What is the very surprising particularity of Wombat poop?", options: [{fr: "Elles sont cubiques", en: "They are cubic"}, {fr: "Elles brillent dans le noir", en: "They glow in the dark"}, {fr: "Elles sentent la lavande", en: "They smell like lavender"}], correct: 0 },
-  { cat: "Animals", qFr: "Combien de cœurs possède une pieuvre ?", qEn: "How many hearts does an octopus have?", options: [{fr: "Un seul", en: "One"}, {fr: "Trois", en: "Three"}, {fr: "Neuf", en: "Nine"}], correct: 1 },
-  { cat: "Animals", qFr: "Est-il vrai que les vaches ont des 'meilleures amies' ?", qEn: "Is it true that cows have 'best friends'?", options: [{fr: "100% Vrai, elles stressent si on les sépare", en: "100% True, they stress out if separated"}, {fr: "Faux, ce sont des animaux très solitaires", en: "False, they are very solitary animals"}, {fr: "Vrai, mais seulement chez les veaux", en: "True, but only in calves"}], correct: 0 },
-  { cat: "Animals", qFr: "Pourquoi les flamants roses sont-ils de couleur rose ?", qEn: "Why are flamingos pink?", options: [{fr: "À cause du soleil", en: "Because of the sun"}, {fr: "C'est génétique", en: "It's genetic"}, {fr: "À cause des crevettes qu'ils mangent", en: "Because of the shrimp they eat"}], correct: 2 }
-];
+import { QUESTIONS_DB } from './data/questions.js';
 
 // --- FOND DRAPEAU GREC ---
 const GreekFlagBackground = () => (
