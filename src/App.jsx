@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Timer, User, Trophy, Palette, Rocket, History, Music, 
   BookOpen, MapPin, Cross, Zap, ChevronRight, RefreshCw, 
-  Star, ShieldCheck, Flame, Film, Tv, Award
+  Star, ShieldCheck, Flame, Film, Tv, Award, PawPrint, Ghost
 } from 'lucide-react';
 import { initializeApp } from 'firebase/app';
 import { 
@@ -52,7 +52,28 @@ const QUESTIONS_DB = [
 
   // CAPITALES
   { cat: "Geography", qFr: "Quelle est la capitale de l'Italie ?", qEn: "What is the capital of Italy?", options: [{fr: "Milan", en: "Milan"}, {fr: "Venise", en: "Venice"}, {fr: "Rome", en: "Rome"}], correct: 2 },
-  { cat: "Geography", qFr: "Quelle ville est la capitale de la Corée du Sud ?", qEn: "Which city is the capital of South Korea?", options: [{fr: "Tokyo", en: "Tokyo"}, {fr: "Séoul", en: "Seoul"}, {fr: "Pékin", en: "Beijing"}], correct: 1 }
+  { cat: "Geography", qFr: "Quelle ville est la capitale de la Corée du Sud ?", qEn: "Which city is the capital of South Korea?", options: [{fr: "Tokyo", en: "Tokyo"}, {fr: "Séoul", en: "Seoul"}, {fr: "Pékin", en: "Beijing"}], correct: 1 },
+
+  // MUSIQUE
+  { cat: "Music", qFr: "Quel duo français d'électro cachait son visage sous des casques de robots ?", qEn: "Which French electro duo hid their faces under robot helmets?", options: [{fr: "Justice", en: "Justice"}, {fr: "Cassius", en: "Cassius"}, {fr: "Daft Punk", en: "Daft Punk"}], correct: 2 },
+  { cat: "Music", qFr: "De quel instrument jouait le célèbre musicien Jimi Hendrix ?", qEn: "What instrument did the famous musician Jimi Hendrix play?", options: [{fr: "Guitare", en: "Guitar"}, {fr: "Piano", en: "Piano"}, {fr: "Batterie", en: "Drums"}], correct: 0 },
+
+  // JEUX VIDÉO
+  { cat: "Gaming", qFr: "Quel célèbre jeu nous fait empiler des blocs qui tombent du ciel ?", qEn: "Which famous game makes us stack blocks falling from the sky?", options: [{fr: "Minecraft", en: "Minecraft"}, {fr: "Tetris", en: "Tetris"}, {fr: "Pac-Man", en: "Pac-Man"}], correct: 1 },
+  { cat: "Gaming", qFr: "Dans quel jeu doit-on attraper des créatures avec des Poké Balls ?", qEn: "In which game do we catch creatures with Poké Balls?", options: [{fr: "Digimon", en: "Digimon"}, {fr: "Zelda", en: "Zelda"}, {fr: "Pokémon", en: "Pokémon"}], correct: 2 },
+
+  // ANECDOTES INSOLITES (TRIVIA)
+  { cat: "Trivia", qFr: "Comment l'ananas pousse-t-il ?", qEn: "How does a pineapple grow?", options: [{fr: "Sur un arbre", en: "On a tree"}, {fr: "Au ras du sol", en: "Close to the ground"}, {fr: "Sous terre", en: "Underground"}], correct: 1 },
+  { cat: "Trivia", qFr: "Quel mammifère est le seul capable de voler ?", qEn: "Which mammal is the only one capable of flying?", options: [{fr: "L'écureuil volant", en: "Flying squirrel"}, {fr: "La chauve-souris", en: "Bat"}, {fr: "Le lémurien", en: "Lemur"}], correct: 1 },
+  { cat: "Trivia", qFr: "Combien de temps dure la mémoire d'un poisson rouge ? (Mythe ou réalité)", qEn: "How long does a goldfish's memory last?", options: [{fr: "3 secondes", en: "3 seconds"}, {fr: "Plusieurs mois", en: "Several months"}, {fr: "Une journée", en: "A day"}], correct: 1 },
+  { cat: "Trivia", qFr: "Quel aliment naturel ne périme littéralement jamais, même après 3000 ans ?", qEn: "Which natural food literally never expires, even after 3000 years?", options: [{fr: "Le sel", en: "Salt"}, {fr: "Le miel", en: "Honey"}, {fr: "L'huile d'olive", en: "Olive oil"}], correct: 1 },
+  { cat: "Trivia", qFr: "Aux États-Unis, que trouve-t-on dans la composition de la dynamite ?", qEn: "In the United States, what do we find in the composition of dynamite?", options: [{fr: "De la farine de maïs", en: "Corn starch"}, {fr: "Du beurre de cacahuète", en: "Peanut butter"}, {fr: "Du sucre glace", en: "Icing sugar"}], correct: 1 },
+
+  // ANIMAUX ÉTRANGES ET DRÔLES
+  { cat: "Animals", qFr: "Quelle est la particularité très étonnante des crottes du wombat (un marsupial) ?", qEn: "What is the very surprising particularity of Wombat poop?", options: [{fr: "Elles sont cubiques", en: "They are cubic"}, {fr: "Elles brillent dans le noir", en: "They glow in the dark"}, {fr: "Elles sentent la lavande", en: "They smell like lavender"}], correct: 0 },
+  { cat: "Animals", qFr: "Combien de cœurs possède une pieuvre ?", qEn: "How many hearts does an octopus have?", options: [{fr: "Un seul", en: "One"}, {fr: "Trois", en: "Three"}, {fr: "Neuf", en: "Nine"}], correct: 1 },
+  { cat: "Animals", qFr: "Est-il vrai que les vaches ont des 'meilleures amies' ?", qEn: "Is it true that cows have 'best friends'?", options: [{fr: "100% Vrai, elles stressent si on les sépare", en: "100% True, they stress out if separated"}, {fr: "Faux, ce sont des animaux très solitaires", en: "False, they are very solitary animals"}, {fr: "Vrai, mais seulement chez les veaux", en: "True, but only in calves"}], correct: 0 },
+  { cat: "Animals", qFr: "Pourquoi les flamants roses sont-ils de couleur rose ?", qEn: "Why are flamingos pink?", options: [{fr: "À cause du soleil", en: "Because of the sun"}, {fr: "C'est génétique", en: "It's genetic"}, {fr: "À cause des crevettes qu'ils mangent", en: "Because of the shrimp they eat"}], correct: 2 }
 ];
 
 // --- FOND DRAPEAU GREC ---
@@ -224,6 +245,10 @@ export default function App() {
       case "Mythology": return <BookOpen size={16} />;
       case "Geography": return <MapPin size={16} />;
       case "Religion": return <Cross size={16} />;
+      case "Music": return <Music size={16} />;
+      case "Gaming": return <Ghost size={16} />;
+      case "Trivia": return <Star size={16} />;
+      case "Animals": return <PawPrint size={16} />;
       default: return <Zap size={16} />;
     }
   };
